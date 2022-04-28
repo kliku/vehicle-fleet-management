@@ -18,3 +18,4 @@ CREATE TABLE companies
 );
 ALTER TABLE users
     ADD CONSTRAINT fk_users_comanpies FOREIGN KEY (company_id) REFERENCES companies (id);
+CREATE SEQUENCE hibernate_sequence START 1;

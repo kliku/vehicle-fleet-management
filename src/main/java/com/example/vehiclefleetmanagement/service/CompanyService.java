@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class CompanyService {
@@ -23,24 +25,24 @@ public class CompanyService {
         Company company = new Company();
         company.setCompanyName(companyAddForm.getCompanyName());
         company.setEmail(companyAddForm.getEmail());
-        ;
         company.setNip(companyAddForm.getNip());
         company.setCreateDate(LocalDateTime.now());
         companyRepository.save(company);
-
         return company.getId();
     }
 
     public Long addCompanyByNip(String nip) throws JSONException {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> exchange = restTemplate.exchange("https://wl-api.mf.gov.pl/api/search/nip/9542381960?date=2020-01-01",
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String url = "https://wl-api.mf.gov.pl/api/search/nip/" + nip +
+                "?date=" + LocalDate.now().format(formatter);
+        ResponseEntity<String> exchange = restTemplate.exchange(url,
                 HttpMethod.GET, HttpEntity.EMPTY, String.class);
         String jsonString = exchange.getBody();
         JSONObject jsonObject = new JSONObject(jsonString);
         JSONObject result = (JSONObject) jsonObject.get("result");
         JSONObject subject = (JSONObject) result.get("subject");
-        String name = ((JSONObject) subject.get("name")).toString();
-
+        String name = subject.get("name").toString();
 
         Company company = new Company();
         company.setCreateDate(LocalDateTime.now());

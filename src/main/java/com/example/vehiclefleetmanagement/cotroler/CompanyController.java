@@ -3,6 +3,7 @@ package com.example.vehiclefleetmanagement.cotroler;
 import com.example.vehiclefleetmanagement.domain.CompanyAddForm;
 import com.example.vehiclefleetmanagement.service.CompanyService;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,12 @@ public class CompanyController {
 
     @PostMapping(value = "/addByNip")
     public ResponseEntity<String> addCompanyByNip(@RequestBody String nip) {
-        return ResponseEntity.ok("Company id: " + " is created");
+        try {
+            Long id = companyService.addCompanyByNip(nip);
+            return ResponseEntity.ok("Company id: " + id + " is created");
+        } catch (JSONException e) {
+             return ResponseEntity.ok("Error when create company");
+        }
+
     }
 }

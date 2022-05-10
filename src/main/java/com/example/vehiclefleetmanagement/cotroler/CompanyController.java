@@ -1,16 +1,16 @@
 package com.example.vehiclefleetmanagement.cotroler;
 
 import com.example.vehiclefleetmanagement.domain.CompanyAddForm;
+import com.example.vehiclefleetmanagement.domain.CompanyDto;
 import com.example.vehiclefleetmanagement.service.CompanyService;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController("/company")
 public class CompanyController {
@@ -32,6 +32,19 @@ public class CompanyController {
         } catch (JSONException e) {
              return ResponseEntity.ok("Error when create company");
         }
+    }
 
+    @DeleteMapping(value = "/delete/{id}")
+    public void deleteCompany(@PathVariable Long id) {
+        companyService.deleteCompany(id);
+    }
+
+    @GetMapping(value = "/companyList")
+    public List<CompanyDto> getCompanyList() {
+        return companyService.getCompanyList();
+    }
+    @GetMapping(value = "/company/{id}")
+    public CompanyDto getCompanyById(@PathVariable Long id) {
+        return companyService.getCompanyById(id);
     }
 }

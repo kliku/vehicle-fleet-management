@@ -3,7 +3,6 @@ package com.example.vehiclefleetmanagement.domain;
 import lombok.Data;
 
 
-
 @Data
 public class CompanyDto {
 

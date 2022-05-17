@@ -1,7 +1,6 @@
 package com.example.vehiclefleetmanagement.service;
 
 
-import com.example.vehiclefleetmanagement.domain.CompanyDto;
 import com.example.vehiclefleetmanagement.domain.UserAddForm;
 import com.example.vehiclefleetmanagement.domain.UserDto;
 import com.example.vehiclefleetmanagement.model.Company;
@@ -9,7 +8,6 @@ import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CompanyRepository;
 import com.example.vehiclefleetmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -60,7 +58,7 @@ public class UserService {
     public void assignUserToCompany(Long idUser, Long idCompany) {
         Optional<User> userOptional = userRepository.findById(idUser);
         Optional<Company> companyOptional = companyRepository.findById(idCompany);
-        if (userOptional.isPresent() && companyOptional.isPresent()){
+        if (userOptional.isPresent() && companyOptional.isPresent()) {
             Company company = companyOptional.get();
             User user = userOptional.get();
             user.setCompany(company);

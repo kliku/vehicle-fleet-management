@@ -1,6 +1,5 @@
 package com.example.vehiclefleetmanagement.model;
 
-import com.example.vehiclefleetmanagement.model.enums.UserRole;
 import lombok.Data;
 
 import javax.persistence.*;

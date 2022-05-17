@@ -30,7 +30,7 @@ public class CompanyController {
             Long id = companyService.addCompanyByNip(nip);
             return ResponseEntity.ok("Company id: " + id + " is created");
         } catch (JSONException e) {
-             return ResponseEntity.ok("Error when create company");
+            return ResponseEntity.ok("Error when create company");
         }
     }
 
@@ -43,6 +43,7 @@ public class CompanyController {
     public List<CompanyDto> getCompanyList() {
         return companyService.getCompanyList();
     }
+
     @GetMapping(value = "/company/{id}")
     public CompanyDto getCompanyById(@PathVariable Long id) {
         return companyService.getCompanyById(id);

@@ -63,7 +63,7 @@ public class CompanyService {
     public List<CompanyDto> getCompanyList() {
         List<Company> companyList = companyRepository.findAll();
         List<CompanyDto> resultList = new ArrayList<>();
-        for (Company company: companyList) {
+        for (Company company : companyList) {
             CompanyDto companyDto = new CompanyDto();
             companyDto.setId(company.getId());
             companyDto.setCompanyName(company.getCompanyName());

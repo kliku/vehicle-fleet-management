@@ -2,10 +2,16 @@ package com.example.vehiclefleetmanagement.cotroler;
 
 import com.example.vehiclefleetmanagement.domain.CompanyAddForm;
 import com.example.vehiclefleetmanagement.domain.CompanyDto;
+import com.example.vehiclefleetmanagement.domain.CompanyStatisticDto;
+import com.example.vehiclefleetmanagement.domain.StatisticCarDto;
 import com.example.vehiclefleetmanagement.service.CompanyService;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +53,18 @@ public class CompanyController {
     @GetMapping(value = "/company/{id}")
     public CompanyDto getCompanyById(@PathVariable Long id) {
         return companyService.getCompanyById(id);
+    }
+
+    @GetMapping(value = "/statistic/{id}")
+    public CompanyStatisticDto getCompanyStatisticDto(Long id) {
+        return companyService.getCompanyStatistic(id);
+    }
+
+    @GetMapping(value = "/statisticCsv/{id}")
+    public  ResponseEntity<Resource> getCsv(Long id) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=csttest.csv")
+                .contentType(MediaType.parseMediaType("application/csv"))
+                .body(new InputStreamResource(companyService.getCarListStatistic(id)));
     }
 }

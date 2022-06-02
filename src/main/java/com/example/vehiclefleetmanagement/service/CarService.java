@@ -1,9 +1,6 @@
 package com.example.vehiclefleetmanagement.service;
 
-import com.example.vehiclefleetmanagement.domain.CarAddForm;
-import com.example.vehiclefleetmanagement.domain.CarDetailsDto;
-import com.example.vehiclefleetmanagement.domain.RefuelingDto;
-import com.example.vehiclefleetmanagement.domain.RepairDto;
+import com.example.vehiclefleetmanagement.domain.*;
 import com.example.vehiclefleetmanagement.model.Car;
 import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CarRepository;
@@ -11,6 +8,8 @@ import com.example.vehiclefleetmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -45,6 +44,23 @@ public class CarService {
         carDetailsDto.setRepairList(car.getRepairList().stream()
                 .map(repair -> new RepairDto(repair.getCreateTime(), repair.getPrice(), repair.getDescriptions()))
                 .collect(Collectors.toList()));
+        carDetailsDto.setOverviewList(car.getOverviewList().stream()
+                .map(overview -> new OverviewDto(overview.getCreateTime(), overview.getPrice(), overview.getDescriptions()))
+                .collect(Collectors.toList()));
         return carDetailsDto;
+    }
+
+    public List<CarDto> getCarList() {
+        List<Car> carList = carRepository.findAll();
+        List<CarDto> resultList = new ArrayList<>();
+        for (Car car : carList) {
+            CarDto carDto = new CarDto();
+            carDto.setCarBrand(car.getCarBrand());
+            carDto.setCarModel(car.getCarModel());
+            carDto.setYear(car.getYear());
+            carDto.setUserId(car.getId());
+            resultList.add(carDto);
+        }
+        return resultList;
     }
 }

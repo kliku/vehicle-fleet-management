@@ -5,12 +5,10 @@ import java.util.List;
 
 @Data
 
-public class CarDetailsDto {
+public class CarDetailsDto extends CarDto{
 
-    private String carBrand;
-    private String carModel;
-    private Integer year;
     private List<RefuelingDto> refuelingList;
     private List<RepairDto> repairList;
-    private Long userId;
+    private List<OverviewDto> overviewList;
+    private List<FaultDto> faultList;
 }

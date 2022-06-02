@@ -1,9 +1,10 @@
 package com.example.vehiclefleetmanagement.service;
 
-import com.example.vehiclefleetmanagement.domain.CompanyAddForm;
-import com.example.vehiclefleetmanagement.domain.CompanyDto;
-import com.example.vehiclefleetmanagement.model.Company;
+import com.example.vehiclefleetmanagement.domain.*;
+import com.example.vehiclefleetmanagement.model.*;
 import com.example.vehiclefleetmanagement.repository.CompanyRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -82,5 +84,58 @@ public class CompanyService {
         companyDto.setEmail(company.getEmail());
         companyDto.setNip(company.getNip());
         return companyDto;
+    }
+
+    public List<StatisticCarDto> getStatisticCar(Company company) {
+        List<StatisticCarDto> statisticCarList = new ArrayList<>();
+        for (User user : company.getUserList()) {
+            for (Car car : user.getCarList()) {
+                StatisticCarDto statisticCarDto = new StatisticCarDto();
+                statisticCarDto.setCarModel(car.getCarModel());
+                statisticCarDto.setCarBrand(car.getCarBrand());
+                statisticCarDto.setUserName(user.getUserName());
+                List<Overview> overviewList = car.getOverviewList();
+                if (!overviewList.isEmpty()) {
+                    Overview overview = overviewList.get(overviewList.size() - 1);
+                    statisticCarDto.setNextOverview(overview.getValidDate());
+                    statisticCarDto.setIsValid(overview.getIsValid());
+                }
+                statisticCarDto.setCostRefueling(car.getRefuelingList()
+                        .stream().mapToDouble(Refueling::getPrice).sum());
+                statisticCarDto.setCostRepair(car.getRepairList()
+                        .stream().mapToDouble(Repair::getPrice).sum());
+                statisticCarList.add(statisticCarDto);
+            }
+        }
+        return statisticCarList;
+    }
+
+    public CompanyStatisticDto getCompanyStatistic(Long id) {
+        Company company = companyRepository.findById(id).orElse(null);
+        CompanyStatisticDto companyStatisticDto = new CompanyStatisticDto();
+        companyStatisticDto.setStatisticCarDtoList(getStatisticCar(company));
+        companyStatisticDto.setNumberOfUser(company.getUserList().size());
+        companyStatisticDto.setNumberOfCars(company.getUserList().stream().mapToInt(user ->
+                user.getCarList().size()).sum());
+        return companyStatisticDto;
+    }
+
+    public ByteArrayInputStream getCarListStatistic(Long id) {
+        Company company = companyRepository.findById(id).orElse(null);
+        List<StatisticCarDto> statisticCarList = getStatisticCar(company);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withHeader
+                ("carBrand", "carModel", "userName", "nextOverview", "isValid", "costRefueling", "costRepair");
+        try (CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), csvFormat)) {
+            for (StatisticCarDto statisticCarDto : statisticCarList) {
+                csvPrinter.printRecord(statisticCarDto.getCarBrand(),
+                        statisticCarDto.getCarModel(), statisticCarDto.getUserName(), LocalDateTime.now(),
+                        statisticCarDto.getIsValid() ,statisticCarDto.getCostRefueling(), statisticCarDto.getCostRepair());
+            }
+            csvPrinter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new ByteArrayInputStream(out.toByteArray());
     }
 }

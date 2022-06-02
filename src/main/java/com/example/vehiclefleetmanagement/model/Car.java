@@ -28,6 +28,7 @@ public class Car {
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY)
     private List<Repair> repairList;
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY)
+    @OrderBy("id")
     private List<Overview> overviewList;
     @OneToMany(mappedBy = "car", fetch = FetchType.LAZY)
     private List<Fault> faultList;

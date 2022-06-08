@@ -3,11 +3,13 @@ package com.example.vehiclefleetmanagement.service;
 
 import com.example.vehiclefleetmanagement.domain.UserAddForm;
 import com.example.vehiclefleetmanagement.domain.UserDto;
+import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
 import com.example.vehiclefleetmanagement.model.Company;
 import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CompanyRepository;
 import com.example.vehiclefleetmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,14 +26,15 @@ public class UserService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    public void addUser(UserAddForm userAddForm) {
+    public void addUser(UserAddForm userAddForm) throws ApplicationLogicExceptions {
         User user = new User();
         user.setUserName(userAddForm.getUserName());
         user.setPassword(userAddForm.getPassword());
         user.setEmail(userAddForm.getEmail());
         user.setCreateDate(LocalDateTime.now());
         user.setUserRole(userAddForm.getUserRole());
-        Company company = companyRepository.getById(userAddForm.getCompanyId());
+        Company company = companyRepository.findById(userAddForm.getCompanyId()).orElseThrow(
+                () -> new ApplicationLogicExceptions("Not find company"));
         user.setCompany(company);
         userRepository.save(user);
     }

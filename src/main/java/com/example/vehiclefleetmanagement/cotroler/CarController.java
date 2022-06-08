@@ -4,16 +4,18 @@ import com.example.vehiclefleetmanagement.domain.CarAddForm;
 import com.example.vehiclefleetmanagement.domain.CarDetailsDto;
 import com.example.vehiclefleetmanagement.domain.CarDto;
 import com.example.vehiclefleetmanagement.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController("/car")
+@AllArgsConstructor
 public class CarController {
-    @Autowired
-    private CarService carService;
+
+    private final CarService carService;
+
 
     @PostMapping(value = "/addCar")
     public void addCar(@RequestBody CarAddForm carAddForm) {

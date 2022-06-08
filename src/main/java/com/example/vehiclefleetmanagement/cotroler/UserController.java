@@ -3,11 +3,14 @@ package com.example.vehiclefleetmanagement.cotroler;
 
 import com.example.vehiclefleetmanagement.domain.UserAddForm;
 import com.example.vehiclefleetmanagement.domain.UserDto;
+import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
 import com.example.vehiclefleetmanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.print.DocFlavor;
 import java.util.List;
 
 @RestController("/user")
@@ -17,8 +20,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "/addUser")
-    public void addUser(@RequestBody UserAddForm userAddForm) {
-        userService.addUser(userAddForm);
+    public ResponseEntity<String> addUser(@RequestBody UserAddForm userAddForm) {
+        try {
+            userService.addUser(userAddForm);
+            return ResponseEntity.ok("Complete user add");
+        } catch (ApplicationLogicExceptions e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @DeleteMapping(value = "/deleteUser/{id}")

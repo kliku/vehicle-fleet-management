@@ -5,9 +5,15 @@ import com.example.vehiclefleetmanagement.model.Car;
 import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CarRepository;
 import com.example.vehiclefleetmanagement.repository.UserRepository;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,5 +68,25 @@ public class CarService {
             resultList.add(carDto);
         }
         return resultList;
+    }
+
+    public void saveCarFromCsv(Long id, MultipartFile multipartFile) {
+        User user = new User();
+        user.setId(id);
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(multipartFile.getInputStream()))) {
+            CSVParser csvParser = new CSVParser(bufferedReader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withTrim());
+            List<Car> carList = new ArrayList<>();
+            csvParser.getRecords().stream().forEach(row -> {
+               Car car = new Car();
+               car.setCarBrand(row.get("carBrand"));
+               car.setCarModel(row.get("carModel"));
+               car.setYear(Integer.parseInt(row.get("year")));
+               car.setUser(user);
+               carList.add(car);
+            });
+            carRepository.saveAll(carList);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.example.vehiclefleetmanagement.domain.CarDto;
 import com.example.vehiclefleetmanagement.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,4 +28,8 @@ public class CarController {
         return carService.getCarList();
     }
 
+    @PostMapping(value = "/addCarFromCSV/{id}")
+    public void saveCarFromCsv(@PathVariable Long id, @RequestPart("multipartFile") MultipartFile multipartFile) {
+        carService.saveCarFromCsv(id, multipartFile);
+    }
 }

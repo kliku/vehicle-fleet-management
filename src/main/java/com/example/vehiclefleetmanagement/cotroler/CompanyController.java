@@ -67,4 +67,5 @@ public class CompanyController {
                 .contentType(MediaType.parseMediaType("application/csv"))
                 .body(new InputStreamResource(companyService.getCarListStatistic(id)));
     }
+
 }

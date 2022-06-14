@@ -4,6 +4,7 @@ import com.example.vehiclefleetmanagement.domain.CompanyAddForm;
 import com.example.vehiclefleetmanagement.domain.CompanyDto;
 import com.example.vehiclefleetmanagement.domain.CompanyStatisticDto;
 import com.example.vehiclefleetmanagement.domain.StatisticCarDto;
+import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
 import com.example.vehiclefleetmanagement.service.CompanyService;
 
 import org.json.JSONException;
@@ -41,8 +42,13 @@ public class CompanyController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public void deleteCompany(@PathVariable Long id) {
-        companyService.deleteCompany(id);
+    public ResponseEntity<String> deleteCompany(@PathVariable Long id) {
+        try {
+            companyService.deleteCompany(id);
+            return ResponseEntity.ok("Delete company with id:" + id);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Not find company id: " + id);
+        }
     }
 
     @GetMapping(value = "/companyList")
@@ -51,7 +57,7 @@ public class CompanyController {
     }
 
     @GetMapping(value = "/company/{id}")
-    public CompanyDto getCompanyById(@PathVariable Long id) {
+    public CompanyDto getCompanyById(@PathVariable Long id) throws ApplicationLogicExceptions {
         return companyService.getCompanyById(id);
     }
 

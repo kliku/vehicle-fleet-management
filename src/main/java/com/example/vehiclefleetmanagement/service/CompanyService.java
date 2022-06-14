@@ -1,6 +1,7 @@
 package com.example.vehiclefleetmanagement.service;
 
 import com.example.vehiclefleetmanagement.domain.*;
+import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
 import com.example.vehiclefleetmanagement.model.*;
 import com.example.vehiclefleetmanagement.repository.CompanyRepository;
 import org.apache.commons.csv.CSVFormat;
@@ -76,8 +77,9 @@ public class CompanyService {
         return resultList;
     }
 
-    public CompanyDto getCompanyById(Long id) {
-        Company company = companyRepository.findById(id).orElse(null);
+    public CompanyDto getCompanyById(Long id) throws ApplicationLogicExceptions{
+        Company company = companyRepository.findById(id).orElseThrow(
+                () -> new ApplicationLogicExceptions("Not find Company by id: " + id));
         CompanyDto companyDto = new CompanyDto();
         companyDto.setId(company.getId());
         companyDto.setCompanyName(company.getCompanyName());

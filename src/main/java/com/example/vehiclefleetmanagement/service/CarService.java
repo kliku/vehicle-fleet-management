@@ -1,6 +1,7 @@
 package com.example.vehiclefleetmanagement.service;
 
 import com.example.vehiclefleetmanagement.domain.*;
+import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
 import com.example.vehiclefleetmanagement.model.Car;
 import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CarRepository;
@@ -37,8 +38,8 @@ public class CarService {
         carRepository.save(car);
     }
 
-    public CarDetailsDto getCarDetailsById(Long id) {
-        Car car = carRepository.findById(id).orElse(null);
+    public CarDetailsDto getCarDetailsById(Long id) throws ApplicationLogicExceptions {
+        Car car = carRepository.findById(id).orElseThrow(() -> new ApplicationLogicExceptions("Not find id: " + id));
         CarDetailsDto carDetailsDto = new CarDetailsDto();
         carDetailsDto.setCarBrand(car.getCarBrand());
         carDetailsDto.setCarModel(car.getCarModel());

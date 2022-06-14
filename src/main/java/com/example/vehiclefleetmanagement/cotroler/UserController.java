@@ -30,8 +30,13 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/deleteUser/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok("Delete user with id:" + id);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Not find user id: " + id);
+        }
     }
 
     @GetMapping(value = "/userList")

@@ -3,6 +3,7 @@ package com.example.vehiclefleetmanagement.cotroler;
 import com.example.vehiclefleetmanagement.domain.CarAddForm;
 import com.example.vehiclefleetmanagement.domain.CarDetailsDto;
 import com.example.vehiclefleetmanagement.domain.CarDto;
+import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
 import com.example.vehiclefleetmanagement.service.CarService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,11 @@ public class CarController {
     }
     @GetMapping(value = "/details/{id}")
     public CarDetailsDto getCarDetailsById(@PathVariable Long id) {
-        return carService.getCarDetailsById(id);
+        try {
+            return carService.getCarDetailsById(id);
+        } catch (ApplicationLogicExceptions e) {
+            throw new RuntimeException(e);
+        }
     }
     @GetMapping(value = "/carList")
     public List<CarDto> getCarList() {

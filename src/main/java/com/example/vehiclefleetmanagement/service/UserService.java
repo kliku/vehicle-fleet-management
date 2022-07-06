@@ -1,6 +1,7 @@
 package com.example.vehiclefleetmanagement.service;
 
 
+import com.example.vehiclefleetmanagement.domain.LoginForm;
 import com.example.vehiclefleetmanagement.domain.UserAddForm;
 import com.example.vehiclefleetmanagement.domain.UserDto;
 import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
@@ -8,8 +9,14 @@ import com.example.vehiclefleetmanagement.model.Company;
 import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CompanyRepository;
 import com.example.vehiclefleetmanagement.repository.UserRepository;
+import com.example.vehiclefleetmanagement.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,10 +33,19 @@ public class UserService {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
     public void addUser(UserAddForm userAddForm) throws ApplicationLogicExceptions {
         User user = new User();
         user.setUserName(userAddForm.getUserName());
-        user.setPassword(userAddForm.getPassword());
+        user.setPassword(passwordEncoder.encode(userAddForm.getPassword()));
         user.setEmail(userAddForm.getEmail());
         user.setCreateDate(LocalDateTime.now());
         user.setUserRole(userAddForm.getUserRole());
@@ -67,6 +83,13 @@ public class UserService {
             user.setCompany(company);
             userRepository.save(user);
         }
+    }
+
+    public String login(LoginForm loginForm) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtUtils.generateToken(authentication);
     }
 
 }

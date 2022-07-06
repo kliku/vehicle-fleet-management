@@ -38,6 +38,7 @@ public class CarService {
         carRepository.save(car);
     }
 
+
     public CarDetailsDto getCarDetailsById(Long id) throws ApplicationLogicExceptions {
         Car car = carRepository.findById(id).orElseThrow(() -> new ApplicationLogicExceptions("Not find id: " + id));
         CarDetailsDto carDetailsDto = new CarDetailsDto();

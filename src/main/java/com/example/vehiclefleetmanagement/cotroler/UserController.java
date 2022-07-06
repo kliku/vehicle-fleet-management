@@ -1,6 +1,7 @@
 package com.example.vehiclefleetmanagement.cotroler;
 
 
+import com.example.vehiclefleetmanagement.domain.LoginForm;
 import com.example.vehiclefleetmanagement.domain.UserAddForm;
 import com.example.vehiclefleetmanagement.domain.UserDto;
 import com.example.vehiclefleetmanagement.exceptions.ApplicationLogicExceptions;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.print.DocFlavor;
 import java.util.List;
 
-@RestController("/user")
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -47,5 +49,10 @@ public class UserController {
     @PostMapping(value = "/assignCompany/{idUser}/{idCompany}")
     public void assignUserToCompany(@PathVariable Long idUser, @PathVariable Long idCompany) {
         userService.assignUserToCompany(idUser, idCompany);
+    }
+
+    @PostMapping(value = "/login")
+    public String login(@RequestBody LoginForm loginForm) {
+        return userService.login(loginForm);
     }
 }

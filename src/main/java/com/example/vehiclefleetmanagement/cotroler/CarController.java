@@ -11,7 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController("/car")
+@RestController
+@RequestMapping("/car")
 @AllArgsConstructor
 public class CarController {
 
@@ -38,5 +39,10 @@ public class CarController {
     @PostMapping(value = "/addCarFromCSV/{id}")
     public void saveCarFromCsv(@PathVariable Long id, @RequestPart("multipartFile") MultipartFile multipartFile) {
         carService.saveCarFromCsv(id, multipartFile);
+    }
+
+    @GetMapping(value = "/current/user")
+    public List<CarDto> getCarForCurrentUser() {
+        return carService.getCarForCurrentUser();
     }
 }

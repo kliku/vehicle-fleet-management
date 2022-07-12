@@ -28,6 +28,9 @@ public class CarService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     public void addCar(CarAddForm carAddForm) {
         Car car = new Car();
         car.setCarBrand(carAddForm.getCarBrand());
@@ -60,16 +63,7 @@ public class CarService {
 
     public List<CarDto> getCarList() {
         List<Car> carList = carRepository.findAll();
-        List<CarDto> resultList = new ArrayList<>();
-        for (Car car : carList) {
-            CarDto carDto = new CarDto();
-            carDto.setCarBrand(car.getCarBrand());
-            carDto.setCarModel(car.getCarModel());
-            carDto.setYear(car.getYear());
-            carDto.setUserId(car.getId());
-            resultList.add(carDto);
-        }
-        return resultList;
+        return mapCars(carList);
     }
 
     public void saveCarFromCsv(Long id, MultipartFile multipartFile) {
@@ -91,4 +85,23 @@ public class CarService {
             throw new RuntimeException(e);
         }
     }
+
+    public List<CarDto> getCarForCurrentUser() {
+        User user = userService.getCurrentLoggerUser();
+        return mapCars(user.getCarList());
+    }
+
+    private List<CarDto> mapCars(List<Car> cars) {
+        List<CarDto> resultList = new ArrayList<>();
+        for (Car car : cars) {
+            CarDto carDto = new CarDto();
+            carDto.setCarBrand(car.getCarBrand());
+            carDto.setCarModel(car.getCarModel());
+            carDto.setYear(car.getYear());
+            carDto.setUserId(car.getId());
+            resultList.add(carDto);
+        }
+        return resultList;
+    }
+
 }

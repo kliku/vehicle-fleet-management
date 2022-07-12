@@ -10,6 +10,7 @@ import com.example.vehiclefleetmanagement.model.User;
 import com.example.vehiclefleetmanagement.repository.CompanyRepository;
 import com.example.vehiclefleetmanagement.repository.UserRepository;
 import com.example.vehiclefleetmanagement.security.JwtUtils;
+import com.example.vehiclefleetmanagement.security.UserDetailsImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -90,6 +91,12 @@ public class UserService {
                 .authenticate(new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtUtils.generateToken(authentication);
+    }
+
+    public User getCurrentLoggerUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImplementation userDetailsImplementation = (UserDetailsImplementation) authentication.getPrincipal();
+        return userRepository.findByUserNameEquals(userDetailsImplementation.getUsername()).orElseThrow();
     }
 
 }

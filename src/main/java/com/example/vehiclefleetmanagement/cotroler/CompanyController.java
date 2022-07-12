@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController("/company")
+@RestController
+@RequestMapping("/company")
 public class CompanyController {
 
     @Autowired

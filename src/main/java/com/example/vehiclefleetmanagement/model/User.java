@@ -1,7 +1,8 @@
 package com.example.vehiclefleetmanagement.model;
 
 import com.example.vehiclefleetmanagement.model.enums.UserRole;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

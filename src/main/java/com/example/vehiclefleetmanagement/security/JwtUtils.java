@@ -18,7 +18,7 @@ public class JwtUtils {
                 .setSubject(user.getUsername())
                 .setExpiration(new Date(new Date().getTime() + experiationTime))
                 .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.ES512, jwtSecretKeys)
+                .signWith(SignatureAlgorithm.HS512, jwtSecretKeys)
                 .compact();
         return token;
     }
